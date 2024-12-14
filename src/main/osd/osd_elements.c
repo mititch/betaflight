@@ -211,6 +211,37 @@ static const radioControls_t radioModes[4] = {
 };
 #endif
 
+#ifdef USE_OBJECTS_TRACKING
+typedef struct objectTrack_s {
+    uint8_t x; //30
+    uint8_t y; //16
+    bool locked;
+} objectTrack_t;
+
+typedef struct objectsTracking_s {
+    objectTrack_t* tracks;
+    uint8_t size;
+} objectsTracking_t;
+
+static void getFakeObjectsTracking(objectsTracking_t *tracking) {
+    uint8_t size = 3;
+
+    objectTrack_t* array = (objectTrack_t*)malloc(size * sizeof(objectTrack_t));
+    array[0].x = 0;
+    array[0].y = 0;
+    array[0].locked = false;
+    array[1].x = 14;
+    array[1].y = 9;
+    array[1].locked = true;
+    array[2].x = 17;
+    array[2].y = 10;
+    array[2].locked = false;
+    
+    tracking->tracks = array;
+    tracking->size = size;
+}
+#endif
+
 static const char compassBar[] = {
   SYM_HEADING_W,
   SYM_HEADING_LINE, SYM_HEADING_DIVIDED_LINE, SYM_HEADING_LINE,
@@ -1772,6 +1803,37 @@ static void osdElementWarnings(osdElementParms_t *element)
 #endif // USE_CRAFTNAME_MSGS
 }
 
+#ifdef USE_OBJECTS_TRACKING
+static void osdElementObjectsTracking(osdElementParms_t *element)
+{
+    static objectsTracking_t tracking;
+    static uint8_t current = 0;
+
+    if (current == 0) {
+        getFakeObjectsTracking(&tracking);
+    }
+
+    if (current < tracking.size) {
+        element->elemOffsetX = tracking.tracks[current].x;
+        element->elemOffsetY = tracking.tracks[current].y;
+        if (tracking.tracks[current].locked) {
+            tfp_sprintf(element->buff, "O");
+        } else {
+            tfp_sprintf(element->buff, "U");
+        }
+    }
+
+    current++;
+
+    if (current < tracking.size) {
+        element->rendered = false;
+    } else {
+        free(tracking.tracks);
+        current = 0;
+    }
+}
+#endif
+
 #ifdef USE_MSP_DISPLAYPORT
 static void osdElementSys(osdElementParms_t *element)
 {
@@ -1882,6 +1944,9 @@ static const uint8_t osdElementDisplayOrder[] = {
     OSD_SYS_WARNINGS,
     OSD_SYS_VTX_TEMP,
     OSD_SYS_FAN_SPEED,
+#endif
+#ifdef USE_OBJECTS_TRACKING
+    OSD_OBJECTS_TRACKING
 #endif
 };
 
@@ -2022,6 +2087,9 @@ const osdElementDrawFn osdElementDrawFunction[OSD_ITEM_COUNT] = {
     [OSD_SYS_WARNINGS]            = osdElementSys,
     [OSD_SYS_VTX_TEMP]            = osdElementSys,
     [OSD_SYS_FAN_SPEED]           = osdElementSys,
+#endif
+#ifdef USE_OBJECTS_TRACKING
+    [OSD_OBJECTS_TRACKING]        = osdElementObjectsTracking,
 #endif
 };
 

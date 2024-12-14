@@ -170,6 +170,9 @@ const OSD_Entry menuOsdActiveElemsEntries[] =
     {"LAP TIME PREVIOUS",  OME_VISIBLE | DYNAMIC, NULL, &osdConfig_item_pos[OSD_GPS_LAP_TIME_PREVIOUS]},
     {"LAP TIME BEST 3",    OME_VISIBLE | DYNAMIC, NULL, &osdConfig_item_pos[OSD_GPS_LAP_TIME_BEST3]},
 #endif // USE_GPS_LAP_TIMER
+#ifdef USE_OBJECTS_TRACKING
+    {"OBJECTS TRACKING",   OME_VISIBLE | DYNAMIC, NULL, &osdConfig_item_pos[OSD_OBJECTS_TRACKING]},
+#endif
     {"PILOT NAME",         OME_VISIBLE | DYNAMIC, NULL, &osdConfig_item_pos[OSD_PILOT_NAME]},
     {"RC CHANNELS",        OME_VISIBLE | DYNAMIC, NULL, &osdConfig_item_pos[OSD_RC_CHANNELS]},
     {"CAMERA FRAME",       OME_VISIBLE | DYNAMIC, NULL, &osdConfig_item_pos[OSD_CAMERA_FRAME]},

@@ -380,6 +380,8 @@
 #define USE_SIMPLIFIED_TUNING
 #define USE_CRAFTNAME_MSGS
 
+#define USE_OBJECTS_TRACKING
+
 #if !defined(CORE_BUILD)
 // CORE_BUILD is only hardware drivers, and the bare minimum
 // any thing defined here will be in the standard (git hub actions)

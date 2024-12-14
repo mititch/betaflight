@@ -461,6 +461,10 @@ void pgResetFn_osdElementConfig(osdElementConfig_t *osdElementConfig)
     osdElementConfig->item_pos[OSD_HORIZON_SIDEBARS]   = OSD_POS((midCol - 1), (midRow - 1));
     osdElementConfig->item_pos[OSD_CAMERA_FRAME]       = OSD_POS((midCol - 12), (midRow - 6));
     osdElementConfig->item_pos[OSD_UP_DOWN_REFERENCE]  = OSD_POS((midCol - 2), (midRow - 1));
+#ifdef USE_OBJECTS_TRACKING    
+    //auto position   
+//    osdElementConfig->item_pos[OSD_OBJECTS_TRACKING]   = OSD_POS(0, 0);
+#endif
 }
 
 static void osdDrawLogo(int x, int y, displayPortSeverity_e fontSel)
