@@ -175,6 +175,10 @@
 #include "olc.h"
 #endif
 
+#ifdef USE_OBJECTS_TRACKING
+#include "io/objects_tracking.h"
+#endif
+
 #define AH_SYMBOL_COUNT 9
 #define AH_SIDEBAR_WIDTH_POS 7
 #define AH_SIDEBAR_HEIGHT_POS 3
@@ -211,36 +215,7 @@ static const radioControls_t radioModes[4] = {
 };
 #endif
 
-#ifdef USE_OBJECTS_TRACKING
-typedef struct objectTrack_s {
-    uint8_t x; //30
-    uint8_t y; //16
-    bool locked;
-} objectTrack_t;
 
-typedef struct objectsTracking_s {
-    objectTrack_t* tracks;
-    uint8_t size;
-} objectsTracking_t;
-
-static void getFakeObjectsTracking(objectsTracking_t *tracking) {
-    uint8_t size = 3;
-
-    objectTrack_t* array = (objectTrack_t*)malloc(size * sizeof(objectTrack_t));
-    array[0].x = 0;
-    array[0].y = 0;
-    array[0].locked = false;
-    array[1].x = 14;
-    array[1].y = 9;
-    array[1].locked = true;
-    array[2].x = 17;
-    array[2].y = 10;
-    array[2].locked = false;
-    
-    tracking->tracks = array;
-    tracking->size = size;
-}
-#endif
 
 static const char compassBar[] = {
   SYM_HEADING_W,
@@ -1810,7 +1785,7 @@ static void osdElementObjectsTracking(osdElementParms_t *element)
     static uint8_t current = 0;
 
     if (current == 0) {
-        getFakeObjectsTracking(&tracking);
+        getObjectsTracking(&tracking);
     }
 
     if (current < tracking.size) {

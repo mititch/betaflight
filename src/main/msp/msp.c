@@ -157,6 +157,10 @@
 #include "hardware_revision.h"
 #endif
 
+#ifdef USE_OBJECTS_TRACKING
+#include "io/objects_tracking.h"
+#endif
+
 #include "msp.h"
 
 static const char * const flightControllerIdentifier = FC_FIRMWARE_IDENTIFIER; // 4 UPPER CASE alpha numeric characters that identify the flight controller.
@@ -3698,6 +3702,27 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
         GPS_update |= GPS_MSP_UPDATE;        // MSP data signalisation to GPS functions
         break;
 #endif // USE_GPS
+
+#ifdef USE_OBJECTS_TRACKING
+        case MSP2_OBJECTS_TRACKING:
+            // message format: size|p[0].x|p[0].y;|[0].lock|...p[size-1].x|p[size-1].y|p[size-1].lock
+
+            unsigned size = sbufReadU8(src); // number of tracks
+
+            objectTrack_t* array = (objectTrack_t*)malloc(size * sizeof(objectTrack_t));
+
+            for (unsigned i = 0; i < size; i++)
+            {
+                array[i].x = sbufReadU8(src);
+                array[i].y = sbufReadU8(src);
+                array[i].locked = sbufReadU8(src);
+            }
+
+            setObjectsTracking(array, size);
+
+        break;
+#endif // USE_OBJECTS_TRACKING
+
     case MSP_SET_FEATURE_CONFIG:
         featureConfigReplace(sbufReadU32(src));
         break;

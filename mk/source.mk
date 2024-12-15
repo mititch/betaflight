@@ -247,6 +247,7 @@ COMMON_SRC = \
             io/gps.c \
             io/ledstrip.c \
             io/pidaudio.c \
+            io/objects_tracking.c \
             osd/osd.c \
             osd/osd_elements.c \
             osd/osd_warnings.c \

@@ -1,5 +1,5 @@
 /*
- * This file is part of Cleanflight, Betaflight and INAV.
+ * This file is part of Cleanflight and Betaflight.
  *
  * Cleanflight and Betaflight are free software. You can redistribute
  * this software and/or modify this software under the terms of the
@@ -7,7 +7,7 @@
  * Foundation, either version 3 of the License, or (at your option)
  * any later version.
  *
- * Cleanflight, Betaflight and INAV are distributed in the hope that they
+ * Cleanflight and Betaflight are distributed in the hope that they
  * will be useful, but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
@@ -18,12 +18,32 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define MSP2_COMMON_SERIAL_CONFIG       0x1009
-#define MSP2_COMMON_SET_SERIAL_CONFIG   0x100A
+#pragma once
 
-// Sensors
-#define MSP2_SENSOR_GPS                 0x1F03
-// TODO: implement new, extensible rangefinder protocol
-#define MSP2_SENSOR_RANGEFINDER_LIDARMT 0x1F01
 
-#define MSP2_OBJECTS_TRACKING           0x1F04
+//#ifdef USE_OBJECTS_TRACKING
+
+#include <stdint.h>
+#include <stdbool.h>
+
+
+typedef struct objectTrack_s {
+    uint8_t x; //30
+    uint8_t y; //16
+    bool locked;
+} objectTrack_t;
+
+typedef struct objectsTracking_s {
+    objectTrack_t* tracks;
+    uint8_t size;
+} objectsTracking_t;
+
+void setObjectsTracking(objectTrack_t* array, uint8_t size);
+
+void getObjectsTracking(objectsTracking_t *tracking);
+
+void getFakeObjectsTracking(objectsTracking_t *tracking);
+//#endif
+
+
+
