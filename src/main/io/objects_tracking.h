@@ -20,12 +20,10 @@
 
 #pragma once
 
-
-//#ifdef USE_OBJECTS_TRACKING
-
 #include <stdint.h>
 #include <stdbool.h>
 
+#define MAX_SUPPORTED_TRACKING_OBJECTS_COUNT 3
 
 typedef struct objectTrack_s {
     uint8_t x; //30
@@ -33,17 +31,10 @@ typedef struct objectTrack_s {
     bool locked;
 } objectTrack_t;
 
-typedef struct objectsTracking_s {
-    objectTrack_t* tracks;
-    uint8_t size;
-} objectsTracking_t;
+void initObjectsTracking(bool fake);
 
-void setObjectsTracking(objectTrack_t* array, uint8_t size);
+void setObjectsTracking(const objectTrack_t* array, uint8_t size);
 
-void getObjectsTracking(objectsTracking_t *tracking);
+uint8_t getTrackedObjectsSize();
 
-void getFakeObjectsTracking(objectsTracking_t *tracking);
-//#endif
-
-
-
+objectTrack_t getTrackedObject(uint8_t index);

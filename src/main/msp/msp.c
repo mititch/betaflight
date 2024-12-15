@@ -3705,20 +3705,20 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
 
 #ifdef USE_OBJECTS_TRACKING
         case MSP2_OBJECTS_TRACKING:
-            // message format: size|p[0].x|p[0].y;|[0].lock|...p[size-1].x|p[size-1].y|p[size-1].lock
 
-            unsigned size = sbufReadU8(src); // number of tracks
+            uint8_t tracksCount = dataSize / (sizeof(uint8_t) * 3);
+            if (tracksCount > MAX_SUPPORTED_TRACKING_OBJECTS_COUNT) {
+                return MSP_RESULT_ERROR;
+            } else {
+                objectTrack_t frame[MAX_SUPPORTED_TRACKING_OBJECTS_COUNT];
 
-            objectTrack_t* array = (objectTrack_t*)malloc(size * sizeof(objectTrack_t));
-
-            for (unsigned i = 0; i < size; i++)
-            {
-                array[i].x = sbufReadU8(src);
-                array[i].y = sbufReadU8(src);
-                array[i].locked = sbufReadU8(src);
+                for (unsigned i = 0; i < tracksCount; i++) {
+                    frame[i].x = sbufReadU8(src);
+                    frame[i].y = sbufReadU8(src);
+                    frame[i].locked = sbufReadU8(src);
+                }
+                setObjectsTracking(frame, tracksCount);
             }
-
-            setObjectsTracking(array, size);
 
         break;
 #endif // USE_OBJECTS_TRACKING

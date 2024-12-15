@@ -18,7 +18,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-//#ifdef USE_OBJECTS_TRACKING
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -26,50 +25,40 @@
 
 #include "objects_tracking.h"
 
+static uint8_t tracksSize = 0;
+static objectTrack_t tracksFrame[MAX_SUPPORTED_TRACKING_OBJECTS_COUNT];
 
-static objectTrack_t* _array = NULL;
-static uint8_t _size = 0;
 
-
-void _deepCopyObjectArray(objectTrack_t *source, objectTrack_t **destination, uint8_t size) {
-
-    *destination = (objectTrack_t*)malloc(size * sizeof(objectTrack_t));
+void setObjectsTracking(const objectTrack_t* frame, uint8_t size) {
     
-    for (size_t i = 0; i < size; i++) {
-        (*destination)[i] = source[i];
+    for (int i = 0; i < size; i++) {
+        tracksFrame[i] = frame[i];
+    }
+    tracksSize = size;
+}
+
+uint8_t getTrackedObjectsSize(void) {
+    return tracksSize;
+}
+
+objectTrack_t getTrackedObject(uint8_t index) {
+    return tracksFrame[index];
+}
+
+void initObjectsTracking(bool fake){
+ 
+    if (fake) {
+        tracksFrame[0].x = 0;
+        tracksFrame[0].y = 0;
+        tracksFrame[0].locked = false;
+        tracksFrame[1].x = 14;
+        tracksFrame[1].y = 9;
+        tracksFrame[1].locked = true;
+        tracksFrame[2].x = 17;
+        tracksFrame[2].y = 10;
+        tracksFrame[2].locked = false;
+        
+        tracksSize = 3;
     }
 }
 
-void setObjectsTracking(objectTrack_t* array, uint8_t size) {
-    
-    free(_array);
-    _size = size;
-    _array = array;
-}
-
-void getObjectsTracking(objectsTracking_t *tracking) {
-    
-    _deepCopyObjectArray(_array, &(tracking->tracks), _size);
-    tracking->size = _size;
-}
-
-void getFakeObjectsTracking(objectsTracking_t *tracking) {
- 
-    uint8_t size = 3;
-
-    objectTrack_t* array = (objectTrack_t*)malloc(size * sizeof(objectTrack_t));
-    array[0].x = 0;
-    array[0].y = 0;
-    array[0].locked = false;
-    array[1].x = 14;
-    array[1].y = 9;
-    array[1].locked = true;
-    array[2].x = 17;
-    array[2].y = 10;
-    array[2].locked = false;
-    
-    tracking->tracks = array;
-    tracking->size = size;
-}
-
-//#endif

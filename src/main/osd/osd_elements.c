@@ -1781,17 +1781,24 @@ static void osdElementWarnings(osdElementParms_t *element)
 #ifdef USE_OBJECTS_TRACKING
 static void osdElementObjectsTracking(osdElementParms_t *element)
 {
-    static objectsTracking_t tracking;
     static uint8_t current = 0;
+    static uint8_t size = 0;
+    static bool ready = false;
 
-    if (current == 0) {
-        getObjectsTracking(&tracking);
+    if (!ready) {
+        initObjectsTracking(true);
+        ready = true;
     }
 
-    if (current < tracking.size) {
-        element->elemOffsetX = tracking.tracks[current].x;
-        element->elemOffsetY = tracking.tracks[current].y;
-        if (tracking.tracks[current].locked) {
+    if (current == 0) {
+        size = getTrackedObjectsSize();
+    }
+
+    if (current < size) {
+        objectTrack_t track = getTrackedObject(current);
+        element->elemOffsetX = track.x;
+        element->elemOffsetY = track.y;
+        if (track.locked) {
             tfp_sprintf(element->buff, "O");
         } else {
             tfp_sprintf(element->buff, "U");
@@ -1800,12 +1807,12 @@ static void osdElementObjectsTracking(osdElementParms_t *element)
 
     current++;
 
-    if (current < tracking.size) {
+    if (current < size) {
         element->rendered = false;
     } else {
-        free(tracking.tracks);
         current = 0;
     }
+    
 }
 #endif
 
